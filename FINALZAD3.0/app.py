@@ -40,7 +40,7 @@ def background_thread(args):
           A = 1
           dbV = 'nieco'
           
-        socketio.sleep(0.3)
+        socketio.sleep(float(A))
         count += 1
         dataCounter +=1
         y = dict(args).get('start')
@@ -51,31 +51,31 @@ def background_thread(args):
             read_ser=ser.readline()
             vstup = read_ser.split(',')
             print(read_ser)
-            #print(float(A))
+
             fo = open("data.txt","a+")   #zapis nacitavanych dat z mobilu do suboru
             fo.write("%s\r\n" %read_ser) #zapis nacitavanych dat z mobilu do suboru
             
         #databaza
         if dbV == 'start':
-          dataList.append(read_ser)
-        else:
-          if len(dataList)>0:
-            #print (str(dataList))
-            #fuj = str(dataList).replace("'", "\"")
-            #print fuj
+            dataList.append(read_ser)
             cursor = db.cursor()
             cursor.execute("SELECT MAX(id) FROM MobilneData")
             maxid = cursor.fetchone()
             cursor.execute("INSERT INTO MobilneData (id, hodnoty) VALUES (%s, %s)", (maxid[0] + 1, read_ser))
             db.commit()
-          dataList = []
-          dataCounter = 0
-          
-        #databaza
         
         if y =="1":
             socketio.emit('my_response',{'data': read_ser,'count': count},namespace='/test')
-            #socketio.emit('my_response2',{'data': vstup[0],'data': vstup[1],'data': vstup[2], 'count': count},namespace='/test')
+            socketio.emit('my_response2',{'data': vstup[1],'data2': vstup[2],'count': count},namespace='/test')
+            socketio.emit('my_response3',{'data3': vstup[3],'data4': vstup[4],'data5': vstup[5],'count': count},namespace='/test')
+            socketio.emit('my_response4',{'data6': vstup[6],'count': count},namespace='/test')
+            socketio.emit('my_response5',{'data7': vstup[7],'count': count},namespace='/test')
+            socketio.emit('my_response6',{'data8': vstup[8],'count': count},namespace='/test')
+            socketio.emit('my_response7',{'data9': vstup[10],'count': count},namespace='/test')
+            socketio.emit('my_response8',{'data10': vstup[11],'count': count},namespace='/test')
+            socketio.emit('my_response9',{'data11': vstup[12],'count': count},namespace='/test')
+            
+
     db.close()
     
 @app.route('/')

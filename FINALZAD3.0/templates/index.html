@@ -13,6 +13,115 @@
     <script src="static/jquery-ui.min.js"></script>
     <script type="text/javascript" charset="utf-8">
      $(document).ready(function() {
+      var x = new Array();
+      var y = new Array();
+      var z = new Array();
+      
+      var i = new Array();
+      var j = new Array();
+      var k = new Array();
+      var l = new Array();
+      
+      var trace;
+      var layout;
+      
+      var gauge = new RadialGauge({
+          renderTo: 'canvasID1',
+          width: 400,
+          height: 400,
+          minValue: 0,
+          maxValue: 380,
+          units: "Azimuth",
+          majorTicks: ["0.0","20.0","40.0","60.0","80.0","100.0","120.0","140.0","160.0","180.0","200.0","220.0","240.0","260.0","280.0","300.0","320.0","340.0","360.0"],
+          minorTicks: 2,
+          strokeTicks: true,
+          highlights: [
+              {
+                  "from": 0.5,
+                  "to": 1,
+                  "color": "rgba(200, 50, 50, .75)"
+              }
+          ],
+          colorPlate: "#fff",
+          borderShadowWidth: 0,
+          borders: false,
+          needleType: "arrow",
+          needleWidth: 2,
+          needleCircleSize: 10,
+          needleCircleOuter: true,
+          needleCircleInner: false,
+          animationDuration: 1500,
+          animationRule: "linear"
+      });
+      gauge.draw();
+      gauge.value = "0";
+      
+      //druhy merak
+      var gauge2 = new RadialGauge({
+          renderTo: 'canvasID2',
+          width: 400,
+          height: 400,
+          units: "Pitch",
+          minValue: -100,
+          maxValue: 100,
+          majorTicks: ["-100.0","-90.0","-80.0","-70.0","-60.0","-50.0","-40.0","-30.0","-20.0","-10.0","0.0","10.0","20.0","30.0","40.0","50.0","60.0","70.0","80.0","90.0","100.0"],
+          minorTicks: 2,
+          strokeTicks: true,
+          highlights: [
+              {
+                  "from": 0.5,
+                  "to": 1,
+                  "color": "rgba(200, 50, 50, .75)"
+              }
+          ],
+          colorPlate: "#fff",
+          borderShadowWidth: 0,
+          borders: false,
+          needleType: "arrow",
+          needleWidth: 2,
+          needleCircleSize: 7,
+          needleCircleOuter: true,
+          needleCircleInner: false,
+          animationDuration: 1500,
+          animationRule: "linear"
+      });
+      gauge2.draw();
+      gauge2.value = "0";
+      //druhy merak
+      
+      //treti merak
+      var gauge3 = new RadialGauge({
+          renderTo: 'canvasID3',
+          width: 400,
+          height: 400,
+          units: "Roll",
+          minValue: -100,
+          maxValue: 100,
+          majorTicks: ["-100.0","-90.0","-80.0","-70.0","-60.0","-50.0","-40.0","-30.0","-20.0","-10.0","0.0","10.0","20.0","30.0","40.0","50.0","60.0","70.0","80.0","90.0","100.0"],
+          minorTicks: 2,
+          strokeTicks: true,
+          highlights: [
+              {
+                  "from": 0.5,
+                  "to": 1,
+                  "color": "rgba(200, 50, 50, .75)"
+              }
+          ],
+          colorPlate: "#fff",
+          borderShadowWidth: 0,
+          borders: false,
+          needleType: "arrow",
+          needleWidth: 2,
+          needleCircleSize: 7,
+          needleCircleOuter: true,
+          needleCircleInner: false,
+          animationDuration: 1500,
+          animationRule: "linear"
+      });
+      gauge3.draw();
+      gauge3.value = "0";
+      //treti merak
+      
       namespace = '/test';
       var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
@@ -21,8 +130,112 @@
 
       socket.on('my_response', function(msg) {
         console.log(msg.data);
-        $('#log').append('Prijate #'+msg.count+': '+msg.data+'<br>').html();});
+        $('#log').append('Prijate #'+msg.count+': '+msg.data+'<br>').html();
+          });
+          
+      socket.on('my_response2', function(msg) {
+        console.log(msg.data);
+        $('#log2').append('Prijate# '+msg.count+':   data Y  = '+msg.data+' data Z   =  '+msg.data2+'<br>').html(); 
+        
+        x.push(parseFloat(msg.count));
+        y.push(parseFloat(msg.data));
+        z.push(parseFloat(msg.data2));
+        trace = {
+            x: x,
+            y: y,
+            name: 'data Y',
+        };     
+        traceB = {
+            x: x,
+            y: z,
+            name: 'data Z',
+        };         
+        layout = {
+          title: 'Vykreslenie dat akcelerometra',
+          xaxis: {
+              title: 'time',
+          },
+          yaxis: {
+              title: 'amplituda',
+          }
+        };
+        console.log(trace);
+        var traces = new Array();
+        traces.push(trace);
+        traces.push(traceB);
+        Plotly.newPlot($('#plotdiv')[0], traces, layout); 
+        });
+        
+      socket.on('my_response3', function(msg) {
+        console.log(msg.data);
+        $('#log3').append('Prijate# '+msg.count+':   data X  = '+msg.data3+':   data Y  = '+msg.data4+' data Z   =  '+msg.data5+'<br>').html(); 
+        //$('#log3').append('Received #'+msg.count+': '+msg.data+'<br>').html(); 
+        i.push(parseFloat(msg.count));
+        j.push(parseFloat(msg.data3));
+        k.push(parseFloat(msg.data4));
+        l.push(parseFloat(msg.data5));
+        trace1 = {
+            x: i,
+            y: j,
+            name: 'data X',
+        };     
+        trace2 = {
+            x: i,
+            y: k,
+            name: 'data Y',
+        };     
+        trace3 = {
+            x: i,
+            y: l,
+            name: 'data Z',
+        };       
+        layout = {
+          title: 'Vykreslenie dat gyroskopu',
+          xaxis: {
+              title: 'time',
+          },
+          yaxis: {
+              title: 'amplituda',
+          }
+        };
+        console.log(trace);
+        var traces2 = new Array();
+        traces2.push(trace1);
+        traces2.push(trace2);
+        traces2.push(trace3);
+        Plotly.newPlot($('#plotdiv2')[0], traces2, layout); 
+        });
 
+      socket.on('my_response4', function(msg) {
+        console.log(msg.data);
+        gauge.value = msg.data6; 
+        });
+        
+      socket.on('my_response5', function(msg) {
+        console.log(msg.data);
+        gauge2.value = msg.data7; 
+        });
+        
+      socket.on('my_response6', function(msg) {
+        console.log(msg.data);
+        gauge3.value = msg.data8; 
+        });
+        
+      socket.on('my_response7', function(msg) {
+        console.log(msg.data);
+        $('#sirka').html(msg.data9); 
+        });
+        
+      socket.on('my_response8', function(msg) {
+        console.log(msg.data);
+        $('#dlzka').html(msg.data10); 
+        });
+      
+      socket.on('my_response9', function(msg) {
+        console.log(msg.data);
+        $('#vyska').html(msg.data11); 
+        });
+      
       $('#open').click(function(event) {
           console.log($('#open').val());
           socket.emit('open', {value: $('#open').val()});
@@ -77,21 +290,23 @@
       
       #open{color:black;
              background-color: #00FFFF;
-             font-size: 22px;
-             padding: 6px 10px;
+             font-size: 20px;
+             padding: 3px 7px;
              margin-left: 30px;}
       
       #start{color:white;
              background-color: #4CAF50;
              font-size: 22px;
              padding: 6px 10px;
-             margin-left: 30px;}
+             margin-left: 90px;
+             margin-top: 30px;}
              
       #stop{color:white;
              background-color: #FF0000;
              font-size: 22px;
              padding: 6px 10px;
-             margin-left: 42px;}
+             margin-left: 120px;
+             margin-top: 30px}
              
       #disc{color:white;
                  background-color: #696969;
@@ -102,65 +317,123 @@
       #log{margin-left: 20px;}
       
       #emit{margin-left: 29px;
-            margin-top:  20px;}
+            margin-top:  30px;}
             
-      #databaza{margin-left: 29px;
-            margin-top:  20px;}
+      .databaza{float:left;
+                width:37.9%;
+                margin-left: 30px;
+                margin-top: 30px;
+                }
+                
+      #dat{margin-top: -38px;
+           margin-left: 248px}
+                 
+      .left{display: inline-block;
+            width:33%;
+            margin-top:  50px;}
+            
+      .hlavna{width:33%;
+              margin-top:  50px;
+              vertical-align: top;
+              display: inline-block;}
+              
+      #ram{border-style: solid;
+           border-width: 1px;
+           margin-left: 7px;
+           width: 1050px;}
+      
+      #vrame{margin-left: 11px;}
+      
+      #log2{display: inline-block;
+            vertical-align: top;
+            margin-left: 50px;}
+            
+      #plotdiv{display: inline-block;}
+           
+      #log3{display: inline-block;
+            vertical-align: top;
+            margin-left: 50px;}
+      
+      #plotdiv{margin-left: 148px}
+      #plotdiv2{display: inline-block;}
+      
+      .stred{text-align: center;}
     </style>
  </head>
  
  <body>
-   <h1 style="color:black;text-align:center">Monitorovanie udajov zo senzorov mobilneho telefonu</h1>
+   <h1 style="color:black;text-align:center">Monitorovanie údajov zo senzorov mobilného telefónu</h1>
   
   <div id="tabs">
       <ul>
-        <li><a href="#tabs-1">Hlavna stranka</a></li>
-        <li><a href="#tabs-2">Data akcelerometra</a></li>
-        <li><a href="#tabs-3">Data gyroskopu</a></li>
-        <li><a href="#tabs-4">Orientacia</a></li>
-        <li><a href="#tabs-5">Aktualna poloha</a></li>
+        <li><a href="#tabs-1">Hlavná stránka</a></li>
+        <li><a href="#tabs-2">Dáta akcelerometra</a></li>
+        <li><a href="#tabs-3">Dáta gyroskopu</a></li>
+        <li><a href="#tabs-4">Orientácia</a></li>
+        <li><a href="#tabs-5">Aktuálna poloha</a></li>
       </ul>
       
       <div id="tabs-1">
-        <button id="open" type="submit" value=1>Nadvizat spojenie</button>
-        <button id="start" type="submit" value=1>start</button>
-        <button id="stop" type="submit" value=0>stop</button>
-       
-        
-        <form id="disconnect" method="POST" action="#">
-          <input id="disc" type="submit" value="Zrusit pripojenie">
-        </form> 
-        <form id="emit" method="POST" action='#'>
-          <input type="text" name="emit_value" id="emit_value" placeholder="Prijimanie dat(s)">
-          <input type="submit" value="Odosli">
-        </form>
-        
-         <div id="databaza">
-          <p>Zapisovanie dat do databazy</p>
-          <button id="buttonVal" type="submit" value="start">Start</button>
+        <div class="hlavna">
+          <form id="disconnect" method="POST" action="#">
+            <button id="open" type="submit" value=1>Nadvizať spojenie</button>
+            <input id="disc" type="submit" value="Zrušiť spojenie">
+          </form> 
+          
+          
+          <button id="start" type="submit" value=1>štart</button>
+          <button id="stop" type="submit" value=0>stop</button>
+         
+          <form id="emit" method="POST" action='#'>
+            <input type="text" name="emit_value" id="emit_value" placeholder="Prijímanie dát(s)">
+            <input type="submit" value="Odošli">
+          </form>
+          
+            <div class="databaza">
+              <p>Zapisovanie dát do databázy</p>
+            </div>
+            <div class="databaza" id="dat">
+              <button id="buttonVal" type="submit" value="start">Štart</button>
+            </div>
+          </div>  
+        <div class="hlavna" id="ram">
+           <h2 id="vrame">Prijaté dáta:</h2>
+           <div id="log"></div>
         </div>
-        <h2>Prijate data:</h2>
-        <div id="log"></div>
       </div>
       
       <div id="tabs-2">
-        <p> druhy</p>
-        <h2>Prijate data:</h2>
+        <h2 class="stred">Dáta zo senzoru akcelerometra</h2>
+        <div>
+        <div id="plotdiv" style="width:900px;height:450px;"></div>
         <div id="log2"></div>
+        </div>
       </div>
       
       <div id="tabs-3">
-        <p> treti</p>
+        <h2 class="stred">Dáta zo senzoru gyroskopu</h2>
+        <div>
+        <div id="plotdiv2" style="width:900px;height:450px;"></div>
+        <div id="log3"></div>
+        </div>
       </div>
       
       <div id="tabs-4">
-        <p> stvrty</p>
+        <div>
+          <h2 class="stred">Dáta zo senzoru orientácie</h2>
+          <div class="left"><canvas id="canvasID1"></canvas></div>
+          <div class="left"><canvas id="canvasID2"></canvas></div>
+          <div class="left"><canvas id="canvasID3"></canvas></div>
+        </div>
       </div>
       
       <div id="tabs-5">
-        <p> piaty</p>
+        <h2 class="stred">Dáta zo senzoru polohy</h2>
+        <h3>Zemská šírka: <span id="sirka"></span></h3>
+        <h3>Zemská dĺžka: <span id="dlzka"></span></h3>
+        <h3>Nadmorsá výška: <span id="vyska"></span></h3>
       </div>
     </div>
-        <div id="log"></div>
+        
  </body>
 </html>
